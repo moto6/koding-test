@@ -10,29 +10,35 @@ fun main(args: Array<String>) {
 }
 
 fun main0818(args: Array<String>) {
-
     val (count, indexOfAnswer) = readLine()!!.split(" ").map { s -> s.toInt() }
-    val scanner = Scanner(System.`in`)
+    val st = StringTokenizer(
+        BufferedReader(InputStreamReader(System.`in`))
+            .readLine(), " "
+    )
+    val list = mutableListOf<Pair<Int, Int>>()
 
-    val unOrderedList: List<Int> = (1..count)
-        .asSequence()
-        .map { scanner.next().toInt() }
-        .toList()
+    for (i in 1..count) {
+        val num = st.nextToken().toInt()
+        list.add(Pair(num, countOf1AtBinary(num)))
+    }
 
-    val orderedList = unOrderedList
-        .sortedWith(
-            compareByDescending<Int> { countOf1AtBinary(it) }
-                .thenByDescending { it }
-        )
-        .toList()
-    print(orderedList[indexOfAnswer - 1])
+    list.sortWith(
+        compareByDescending<Pair<Int, Int>> { it.second }
+            .thenByDescending { it.first }
+    )
 
-
-    //helper(unOrderedList,orderedList)
-
+    print(list[indexOfAnswer - 1].first)
 }
 
-fun helper( unOrderedList:List<Int>, orderedList:List<Int>) {
+fun countOf1AtBinary(decimalNumber: Int): Int {
+    return Integer.toBinaryString(decimalNumber)
+        .toCharArray()
+        .filter { it -> it == '1' }
+        .size
+}
+
+
+fun helper(unOrderedList: List<Int>, orderedList: List<Int>) {
     println("\n============\n")
     println(unOrderedList)
     val elemAndCount =
@@ -46,12 +52,6 @@ fun helper( unOrderedList:List<Int>, orderedList:List<Int>) {
 
 }
 
-fun countOf1AtBinary(decimalNumber: Int): Int {
-    return Integer.toBinaryString(decimalNumber)
-        .toCharArray()
-        .filter { it -> it == '1' }
-        .size
-}
 
 // ----
 

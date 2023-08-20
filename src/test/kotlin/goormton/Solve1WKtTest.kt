@@ -24,18 +24,27 @@ class Solve1WKtTest {
         println("\n 나와야한다 11 45")
     }
 
+    @Test
+    @DisplayName("데이터셋만들기")
+    fun 데이터셋만들기() {
+        //given
+
+        //when
+
+        //then
+        for (i in 1..50000) {
+            print(i)
+            print(" ")
+        }
+    }
+
 
     @Test
     @DisplayName("0 0")
     fun Test2() {
         //given
         autoInput(
-            "4\n" +
-                    "23 40\n" +
-                    "1000\n" +
-                    "1000\n" +
-                    "880\n" +
-                    "20"
+            ""
         )
         //when
         main0815(emptyArray())
@@ -44,5 +53,31 @@ class Solve1WKtTest {
     }
 
 
-}
+    // 0818 테스트
 
+
+    @Test
+    @DisplayName("0818 V1 효율성을 통과하지 못하는")
+    fun test0818V1() {
+        //given
+        autoInput(
+            ""
+        )
+
+        //when
+        main0818V1(emptyArray())
+        //then
+    }
+
+    @Test
+    @DisplayName("0818 V2 효윯성을 통과하는")
+    fun test0818V2() {
+        //given
+        autoInput(
+            ""
+        )
+        //when
+        main0818V1(emptyArray())
+        //then
+    }
+}

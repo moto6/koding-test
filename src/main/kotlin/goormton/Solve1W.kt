@@ -6,11 +6,14 @@ import java.util.*
 
 fun main(args: Array<String>) {
     //main0814(args)
-    main0818(args)
+    main0818V1(args)
+    main0818V2(args)
 }
 
-fun main0818(args: Array<String>) {
-    val (count, indexOfAnswer) = readLine()!!.split(" ").map { s -> s.toInt() }
+fun main0818V2(args: Array<String>) {
+    val (count, indexOfAnswer) = readLine()!!
+        .split(" ")
+        .map { s -> s.toInt() }
     val st = StringTokenizer(
         BufferedReader(InputStreamReader(System.`in`))
             .readLine(), " "
@@ -29,6 +32,22 @@ fun main0818(args: Array<String>) {
 
     print(list[indexOfAnswer - 1].first)
 }
+
+fun main0818V1(args: Array<String>) {
+
+    val (count, indexOfAnswer) = readLine()!!.split(" ").map { s -> s.toInt() }
+    val st = StringTokenizer(BufferedReader(InputStreamReader(System.`in`)).readLine(), " ")
+    val list: List<Int> = (1..count)
+        .asSequence()
+        .map { st.nextToken().toInt() }
+        .sortedWith(
+            compareByDescending<Int> { countOf1AtBinary(it) }
+                .thenByDescending { it }
+        )
+        .toList()
+    print(list[indexOfAnswer - 1])
+}
+
 
 fun countOf1AtBinary(decimalNumber: Int): Int {
     return Integer.toBinaryString(decimalNumber)

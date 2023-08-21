@@ -21,24 +21,26 @@ fun main(args: Array<String>) {
 
 fun getSubString(beginIndex: Int, endIndex: Int, chars: List<Char>): String {
     return chars.subList(beginIndex, endIndex)
-        .toCharArray()
-        .contentToString()
+        .joinToString("")
 }
 
 fun getPointMapper(chars: List<Char>): Map<String, Int> {
     val subStrings: MutableSet<String> = mutableSetOf()
     getSubStringRecursive(0, chars, subStrings)
     //셋에 저장된거 가지고 사전순정렬 때리고 맵으로 리턴
+    print("subStrings" + subStrings)
+
     val stringList = subStrings.
     sortedWith{
         str1, str2 -> val result = str1.compareTo(str2) // 1) 문자열 사전순 정렬
-
-        if (result != 0) {
-            result // If strings are not equal, return the lexicographical comparison result
-        } else {
-            // 2) If strings are equal, sort by length in ascending order
-             str2.length - str1.length
-        }
+        result
+//        if (result == 0) {
+//            str1.length.compareTo(str2.length)
+//            //result // If strings are not equal, return the lexicographical comparison result
+//        } else {
+//            // 2) If strings are equal, sort by length in ascending order
+//             str2.length - str1.length
+//        }
         //1) 문자열 사전순 정렬
         //2) 길이가 짧은게 먼저 나오도록
     }

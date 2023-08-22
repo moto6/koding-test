@@ -1,22 +1,25 @@
 package goormton
 
 fun main(args: Array<String>) {
-    val n = readLine()!!.toInt()
-    val inputs = readLine()!!
-
-    val chars = inputs.toCharArray().toList()
+    readLine()!!.toInt()
+    val chars =  readLine()!!.toCharArray().toList()
     val pointMapper: Map<String, Int> = getPointMapper(chars);
 
+    var maxi = -1;
 
-    for (first in 1 until chars.size - 2) {
-        for (second in first + 1 until chars.size-1) {
+    for (first in 1 until chars.size) {
+        for (second in first + 1 until chars.size) {
             val section1: String = getSubString(0, first, chars)
             val section2: String = getSubString(first, second, chars)
-            val section3: String = getSubString(second, chars.size-1, chars)
+            val section3: String = getSubString(second, chars.size, chars)
+
+            maxi = Math.max(
+                pointMapper[section1]!! + pointMapper[section2]!! + pointMapper[section3]!!,
+                maxi
+            )
         }
     }
-
-
+    print(maxi)
 }
 
 fun getSubString(beginIndex: Int, endIndex: Int, chars: List<Char>): String {
@@ -27,38 +30,19 @@ fun getSubString(beginIndex: Int, endIndex: Int, chars: List<Char>): String {
 fun getPointMapper(chars: List<Char>): Map<String, Int> {
     val subStrings: MutableSet<String> = mutableSetOf()
     getSubStringRecursive(0, chars, subStrings)
-    //셋에 저장된거 가지고 사전순정렬 때리고 맵으로 리턴
-    print("subStrings" + subStrings)
+    val stringList: List<String> = subStrings
+        .sorted()
 
-    val stringList = subStrings.
-    sortedWith{
-        str1, str2 -> val result = str1.compareTo(str2) // 1) 문자열 사전순 정렬
-        result
-//        if (result == 0) {
-//            str1.length.compareTo(str2.length)
-//            //result // If strings are not equal, return the lexicographical comparison result
-//        } else {
-//            // 2) If strings are equal, sort by length in ascending order
-//             str2.length - str1.length
-//        }
-        //1) 문자열 사전순 정렬
-        //2) 길이가 짧은게 먼저 나오도록
-    }
 
-    /*
-                compareByDescending<Int> { countOf1AtBinary(it) }
-            .thenByDescending { it }
-     */
-    print(stringList)
-    return mapOf()
+    return stringList.associateWith { it -> stringList.indexOf(it) + 1 }
 }
 
 fun getSubStringRecursive(beginIndex: Int, chars: List<Char>, subStrings: MutableSet<String>) {
-    if(beginIndex > chars.size) {
+    if (beginIndex > chars.size) {
         return
     }
-    for (step in 1 until chars.size-1) {
-        if((beginIndex + step ) > chars.size ) {
+    for (step in 1 until chars.size - 1) {
+        if ((beginIndex + step) > chars.size) {
             return
         }
         subStrings.add(getSubString(beginIndex, beginIndex + step, chars))

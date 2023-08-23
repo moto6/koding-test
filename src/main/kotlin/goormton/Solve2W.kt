@@ -1,17 +1,85 @@
 package goormton
 
 fun main(args: Array<String>) {
+    //fun main0822(args: Array<String>) {
+    val (sizeOfMap, flag) = readLine()!!.split(" ").map { it.toInt() }
+    val mineMap: MutableList<MutableList<Char>> = mutableListOf()
+
+    for (i in 0 until sizeOfMap) {
+        val charList = readLine()!!
+            .split(" ")
+            .map { it.first() }
+            .map { if (it == '1') 'M' else '-' }
+            .toMutableList()
+        mineMap.add(charList)
+    }
+
+    for( rowIndex in 0 until  sizeOfMap) {
+        val row = mineMap[rowIndex]
+        for(colIndex in 0 until  sizeOfMap) {
+            val col = row.get(colIndex)
+            if(col == '-') {
+                mineMap[rowIndex][colIndex] = adjacentMineCount(mineMap,mineMap.indexOf(row),row.indexOf(col)) ;
+            }
+        }
+    }
+    print(mineMap)
+    print(mineMap[flag][flag])
+}
+
+fun adjacentMineCount(mineMap: MutableList<MutableList<Char>>, indexOfRow: Int, indexOfCol: Int): Char {
+    var count = 0;
+    for(row in indexOfRow-1 .. indexOfRow+1) {
+        for(col in indexOfCol-1 .. indexOfCol+1) {
+            count += when {
+                isMine(row, col, mineMap) -> 1
+                else -> 0
+            }
+        }
+    }
+    return count.digitToChar() //(count+48).toChar();
+}
+
+fun isMine(row: Int, col: Int, mineMap: MutableList<MutableList<Char>>) : Boolean{
+    if (!( 0<= row && row<mineMap.size)) {
+        return false
+    }
+    if (!( 0<= col && col<mineMap.size)) {
+        return false
+    }
+    return mineMap[row][col] == 'M'
+}
+
+/*
+4 2
+0 0 0 1
+0 0 1 0
+0 0 1 0
+0 1 1 1
+=2
+
+5 8
+0 1 1 1 1
+0 1 0 1 0
+0 1 1 1 1
+0 1 1 0 1
+0 1 0 1 0
+=1
+ */
+
+fun main0821(args: Array<String>) {
     readLine()!!.toInt()
-    val chars =  readLine()!!.toCharArray().toList()
-    val pointMapper: Map<String, Int> = getPointMapper(chars);
+    val inputString = readLine()!!
+    val pointMapper: Map<String, Int> = getPointMapper(inputString);
 
     var maxi = -1;
 
-    for (first in 1 until chars.size) {
-        for (second in first + 1 until chars.size) {
-            val section1: String = getSubString(0, first, chars)
-            val section2: String = getSubString(first, second, chars)
-            val section3: String = getSubString(second, chars.size, chars)
+    val stringSize = inputString.length
+    for (first in 1 until stringSize) {
+        for (second in first + 1 until stringSize) {
+            val section1: String = inputString.substring(0, first)
+            val section2: String = inputString.substring(first, second)
+            val section3: String = inputString.substring(second, stringSize)
 
             maxi = Math.max(
                 pointMapper[section1]!! + pointMapper[section2]!! + pointMapper[section3]!!,
@@ -19,34 +87,42 @@ fun main(args: Array<String>) {
             )
         }
     }
-    print(maxi)
+    print(maxi + 3)
 }
 
-fun getSubString(beginIndex: Int, endIndex: Int, chars: List<Char>): String {
-    return chars.subList(beginIndex, endIndex)
-        .joinToString("")
-}
-
-fun getPointMapper(chars: List<Char>): Map<String, Int> {
+fun getPointMapper(inputString: String): Map<String, Int> {
     val subStrings: MutableSet<String> = mutableSetOf()
-    getSubStringRecursive(0, chars, subStrings)
+    //getSubStringRecursive(0, inputString, subStrings)
+    getSubStringV2(0, inputString, subStrings)
+    //print("hi");
     val stringList: List<String> = subStrings
         .sorted()
-
-
-    return stringList.associateWith { it -> stringList.indexOf(it) + 1 }
+    //print(stringList)
+    return (stringList.indices).associateBy { stringList[it] }
 }
 
-fun getSubStringRecursive(beginIndex: Int, chars: List<Char>, subStrings: MutableSet<String>) {
-    if (beginIndex > chars.size) {
+fun getSubStringRecursive(beginIndex: Int, inputString: String, subStrings: MutableSet<String>) {
+    if (beginIndex > inputString.length) {
         return
     }
-    for (step in 1 until chars.size - 1) {
-        if ((beginIndex + step) > chars.size) {
+    for (step in 1 until inputString.length - 1) {
+        if ((beginIndex + step) > inputString.length) {
             return
         }
-        subStrings.add(getSubString(beginIndex, beginIndex + step, chars))
-        getSubStringRecursive(beginIndex + step, chars, subStrings)
+        subStrings.add(inputString.substring(beginIndex, beginIndex + step))
+        getSubStringRecursive(beginIndex + step, inputString, subStrings)
+    }
+}
+
+
+fun getSubStringV2(beginIndex22: Int, inputString: String, subStrings: MutableSet<String>) {
+    for (length in 1 until inputString.length - 1) {
+        for (startPoint in inputString.indices) {
+            if ((startPoint + length) > inputString.length) {
+                continue
+            }
+            subStrings.add(inputString.substring(startPoint, startPoint + length))
+        }
     }
 }
 
@@ -61,4 +137,21 @@ val note0821: String = """
     JVM 언어는 heap 공간에 데이터타입을 저장하기 때문에 c++ 에서의 전역변수 효과를 낼 수 있습니다.
     a-bcb ,ab-cd, abc-d
     b-
+    
+    
+    문제가 출제되고 
+    
+    5/1 은 JVM 억까가 심해 라고 하면서 다른언어로 구현하는 뻘짓을 했고
+    
+    48시간 중에서 40분 남겨놓고 풀었다.. 후..
+    
         """
+
+val ssss = """
+100
+abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv
+
+
+26
+abcdefghijklmnopqrstuvwxyz
+"""

@@ -14,37 +14,54 @@ fun main(args: Array<String>) {
         mineMap.add(charList)
     }
 
-    for( rowIndex in 0 until  sizeOfMap) {
+    for (rowIndex in 0 until sizeOfMap) {
         val row = mineMap[rowIndex]
-        for(colIndex in 0 until  sizeOfMap) {
+        for (colIndex in 0 until sizeOfMap) {
             val col = row.get(colIndex)
-            if(col == '-') {
-                mineMap[rowIndex][colIndex] = adjacentMineCount(mineMap,mineMap.indexOf(row),row.indexOf(col)) ;
+            if (col == '-') {
+                mineMap[rowIndex][colIndex] =
+                    adjacentMineCount(mineMap, mineMap.indexOf(row), row.indexOf(col));
             }
         }
     }
-    print(mineMap)
-    print(mineMap[flag][flag])
+
+    var answer = 0
+    for (rowIndex in 0 until sizeOfMap) {
+        for (colIndex in 0 until sizeOfMap) {
+            answer += when {
+                //return count.digitToChar() //구름에서 사용중인 코틀린 버전이 낮아서 사용이 안됨 ㅠㅠ 고쳐주세요
+                mineMap[rowIndex][colIndex] == (flag + 48).toChar() -> 1
+                else -> 0
+            }
+        }
+    }
+    print(answer)
+    //print(mineMap[flag][flag])
 }
 
-fun adjacentMineCount(mineMap: MutableList<MutableList<Char>>, indexOfRow: Int, indexOfCol: Int): Char {
+fun adjacentMineCount(
+    mineMap: MutableList<MutableList<Char>>,
+    indexOfRow: Int,
+    indexOfCol: Int
+): Char {
     var count = 0;
-    for(row in indexOfRow-1 .. indexOfRow+1) {
-        for(col in indexOfCol-1 .. indexOfCol+1) {
+    for (row in indexOfRow - 1..indexOfRow + 1) {
+        for (col in indexOfCol - 1..indexOfCol + 1) {
             count += when {
                 isMine(row, col, mineMap) -> 1
                 else -> 0
             }
         }
     }
-    return count.digitToChar() //(count+48).toChar();
+    //return count.digitToChar() //구름에서 사용중인 코틀린 버전이 낮아서 사용이 안된다
+    return (count + 48).toChar();
 }
 
-fun isMine(row: Int, col: Int, mineMap: MutableList<MutableList<Char>>) : Boolean{
-    if (!( 0<= row && row<mineMap.size)) {
+fun isMine(row: Int, col: Int, mineMap: MutableList<MutableList<Char>>): Boolean {
+    if (!(0 <= row && row < mineMap.size)) {
         return false
     }
-    if (!( 0<= col && col<mineMap.size)) {
+    if (!(0 <= col && col < mineMap.size)) {
         return false
     }
     return mineMap[row][col] == 'M'

@@ -1,7 +1,10 @@
 package goormton
 
 fun main(args: Array<String>) {
-    //fun main0822(args: Array<String>) {
+
+}
+
+fun main0822(args: Array<String>) {
     val (sizeOfMap, flag) = readLine()!!.split(" ").map { it.toInt() }
     val mineMap: MutableList<MutableList<Char>> = mutableListOf()
 
@@ -15,12 +18,13 @@ fun main(args: Array<String>) {
     }
 
     for (rowIndex in 0 until sizeOfMap) {
-        val row = mineMap[rowIndex]
+        //val row = mineMap[rowIndex]
         for (colIndex in 0 until sizeOfMap) {
-            val col = row.get(colIndex)
-            if (col == '-') {
+            //val col = row.get(colIndex)
+            if (mineMap[rowIndex][colIndex] == '-') {
                 mineMap[rowIndex][colIndex] =
-                    adjacentMineCount(mineMap, mineMap.indexOf(row), row.indexOf(col));
+                        //adjacentMineCount(mineMap, mineMap.indexOf(row), row.indexOf(col));
+                    adjacentMineCount(mineMap, rowIndex, colIndex);
             }
         }
     }
@@ -28,10 +32,12 @@ fun main(args: Array<String>) {
     var answer = 0
     for (rowIndex in 0 until sizeOfMap) {
         for (colIndex in 0 until sizeOfMap) {
-            answer += when {
-                //return count.digitToChar() //구름에서 사용중인 코틀린 버전이 낮아서 사용이 안됨 ㅠㅠ 고쳐주세요
-                mineMap[rowIndex][colIndex] == (flag + 48).toChar() -> 1
-                else -> 0
+//            answer += when {
+//                mineMap[rowIndex][colIndex] == (flag + 48).toChar() -> 1
+//                else -> 0
+//            }
+            if (mineMap[rowIndex][colIndex] == (flag + 48).toChar()) {
+                answer++
             }
         }
     }
@@ -47,9 +53,12 @@ fun adjacentMineCount(
     var count = 0;
     for (row in indexOfRow - 1..indexOfRow + 1) {
         for (col in indexOfCol - 1..indexOfCol + 1) {
-            count += when {
-                isMine(row, col, mineMap) -> 1
-                else -> 0
+//            count += when {
+//                isMine(row, col, mineMap) -> 1
+//                else -> 0
+//            }
+            if (isMine(row, col, mineMap)) {
+                count++
             }
         }
     }
@@ -83,6 +92,10 @@ fun isMine(row: Int, col: Int, mineMap: MutableList<MutableList<Char>>): Boolean
 0 1 0 1 0
 =1
  */
+
+
+
+//==========================================================================================
 
 fun main0821(args: Array<String>) {
     readLine()!!.toInt()

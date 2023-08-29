@@ -6,25 +6,21 @@ class Cmd(
     val count: Int,
     val direction: Char
 ) {
+    val directions: Map<Char, Pair<Int, Int>> = mapOf(
+        Pair('U', Pair(-1, 0)),
+        Pair('D', Pair(1, 0)),
+        Pair('R', Pair(0, 1)),
+        Pair('L', Pair(0, -1)),
+    )
+
     fun execute(curent: Pair<Int, Int>): Pair<Int, Int> {
-        // Pair(row, col)
-        if (this.direction == 'U') {
-            return Pair(curent.first - count, curent.second)
-        }
-
-        if (this.direction == 'D') {
-            return Pair(curent.first + count, curent.second)
-        }
-
-        if (this.direction == 'R') {
-            return Pair(curent.first, curent.second + count)
-        }
-
-        if (this.direction == 'L') {
-            return Pair(curent.first, curent.second - count)
-        }
-        throw RuntimeException("파싱이 잘못된듯?")
+        val diff = directions[direction]!!
+        return Pair(
+            curent.first + (diff.first * count),
+            curent.second + (diff.second * count)
+        )
     }
+
     override fun toString(): String {
         return String.format("$direction $count")
     }
@@ -35,7 +31,7 @@ fun readCmd(n: Int): MutableList<List<Cmd>> {
     for (i in 1..n) {
         val map = readLine()!!
             .split(" ")
-            .map { it -> Cmd(it.first().toInt()-'0'.toInt(), it.last()) }
+            .map { it -> Cmd(it.first().toInt() - '0'.toInt(), it.last()) }
         cmds.add(map)
     }
     return cmds;
@@ -130,8 +126,7 @@ fun runRecursive(
             cmd2D,
             depth
         )
-    }
-    else if (curPos.first >= limit) {
+    } else if (curPos.first >= limit) {
         if (DEBUG) println("ROW overflow")
         return runRecursive(
             limit,
@@ -140,8 +135,7 @@ fun runRecursive(
             cmd2D,
             depth
         )
-    }
-    else if (curPos.second < 0) {
+    } else if (curPos.second < 0) {
         if (DEBUG) println("Col underflow")
         return runRecursive(
             limit,
@@ -150,8 +144,7 @@ fun runRecursive(
             cmd2D,
             depth
         )
-    }
-    else if (curPos.second >= limit) {
+    } else if (curPos.second >= limit) {
         if (DEBUG) println("Col overflow")
         return runRecursive(
             limit,
@@ -165,10 +158,9 @@ fun runRecursive(
     else if (visited[curPos.first][curPos.second]) {
         //재귀함수의 종료조건은 방문한곳에 또 방문하는 경우이다
         return depth
-    }
-    else {
+    } else {
         //==== BEGIN 다음칸 이동
-        if(DEBUG) println("cmd = ${cmd2D[curPos.first][curPos.second]}")
+        if (DEBUG) println("cmd = ${cmd2D[curPos.first][curPos.second]}")
         visited[curPos.first][curPos.second] = true
         val nextPos: Pair<Int, Int> = cmd2D[curPos.first][curPos.second].execute(curPos)
         return runRecursive(

@@ -23,13 +23,23 @@ public class Sy2 {
     public int solution(String[] R) {
         int[][] visited = new int[R.length][R[0].length()];
         char[][] map = convertToMap(R);
-        MyPair currentPos = new MyPair(0, 0);
+
+        MyPair current = new MyPair(0, 0);
+        int firstLimit = map.length;
+        int secondLimit = map[0].length;
+
+        for (int firstIndex = 0; firstIndex < firstLimit; firstIndex++) {
+            for (int secondIndex = 0; secondIndex < secondLimit; secondIndex++) {
+                visited[firstIndex][secondIndex] += 1;
+            }
+        }
+
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            visited[currentPos.first][currentPos.second]++;
-            if (visited[currentPos.first][currentPos.second] > LOOP_THRESHOLD + 1) {
+            visited[current.first][current.second]++;
+            if (visited[current.first][current.second] > LOOP_THRESHOLD + 1) {
                 break;
             }
-            currentPos = availableNextPos(currentPos, map);
+            current = availableNextPos(current, map);
         }
         return cleanedAreaSize(visited);
     }
@@ -46,25 +56,51 @@ public class Sy2 {
         return count;
     }
 
-    private MyPair availableNextPos(
-        MyPair currentPos,
-        char[][] map) {
+    private MyPair availableNextPos(MyPair currentPos, char[][] matrix) {
 
+        int firstLimit = matrix.length;
+        int secondLimit = matrix[0].length;
         int nextFirst = diffs.get(direction % 4).first + currentPos.first;
         int nextSecond = diffs.get(direction % 4).second + currentPos.second;
-        if (rangeAvabilable(map.length, map[0].length, nextFirst, nextSecond) && mapAvabilable(nextFirst,nextSecond,map)) {
+
+        if (rangeAvailable(firstLimit, secondLimit, nextFirst, nextSecond) &&
+            movable(nextFirst, nextSecond, matrix)
+        ) {
             return new MyPair(nextFirst, nextSecond);
         }
+
         direction++;
         return currentPos;
     }
 
-    private boolean mapAvabilable(int nextFirst, int nextSecond, char[][] map) {
-        return map[nextFirst][nextSecond] == '.';
+    private MyPair availableNextPosV0(MyPair currentPos, char[][] matrix) {
+
+        int firstLimit = matrix.length;
+        int secondLimit = matrix[0].length;
+        int nextFirst = diffs.get(direction % 4).first + currentPos.first;
+        int nextSecond = diffs.get(direction % 4).second + currentPos.second;
+
+        if (((firstLimit > nextFirst) &&
+            (secondLimit > nextSecond) &&
+            (0 <= nextFirst) &&
+            (0 <= nextSecond)) &&
+            (matrix[nextFirst][nextSecond] == '.')
+        ) {
+            return new MyPair(nextFirst, nextSecond);
+        }
+
+        direction++;
+        return currentPos;
     }
 
-    private static boolean rangeAvabilable(int limitFirst, int limitSecond, int nextFirst,
-        int nextSecond) {
+    private boolean movable(int nextFirst, int nextSecond, char[][] matrix) {
+        return matrix[nextFirst][nextSecond] == '.';
+    }
+
+    private static boolean rangeAvailable(
+        int limitFirst, int limitSecond,
+        int nextFirst, int nextSecond
+    ) {
         return ((limitFirst > nextFirst) &&
             (limitSecond > nextSecond) &&
             (0 <= nextFirst) &&
@@ -85,7 +121,7 @@ public class Sy2 {
         return map;
     }
 
-    private class MyPair {
+    private static class MyPair {
 
         final int first;
         final int second;

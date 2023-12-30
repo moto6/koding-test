@@ -80,8 +80,8 @@ public class GameJam {
         return score;
     }
 
-    private record jPair(int first, int second) {
-
-    }
+//    private record jPair(int first, int second) {
+//
+//    }
 }
 
